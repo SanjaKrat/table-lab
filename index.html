@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Лабораторія таблиць</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600&family=Unbounded:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f7fc;--card:#fdfeff;--ink:#172340;--mute:#56637f;--line:#c9d3ea;--grid:#9fb0d6;--blue:#2e5bff;--org:#c25e00;--grn:#16876a;--pur:#7a4fd0;--yel:#ffd447;--soft:#e4eaff;--ok:#d7f5e9;--bad:#ffe0dc;--navy:#172340;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10172b;--card:#1a2442;--ink:#eef2fb;--mute:#a5b2d1;--line:#34436b;--grid:#4b5d8f;--blue:#7d9bff;--org:#ffa24d;--grn:#4fd1a5;--pur:#b79bff;--soft:#25325c;--ok:#16443a;--bad:#5a2a2a;--navy:#0b1226}}
+:root[data-theme="dark"]{--bg:#10172b;--card:#1a2442;--ink:#eef2fb;--mute:#a5b2d1;--line:#34436b;--grid:#4b5d8f;--blue:#7d9bff;--org:#ffa24d;--grn:#4fd1a5;--pur:#b79bff;--soft:#25325c;--ok:#16443a;--bad:#5a2a2a;--navy:#0b1226}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Rubik,Arial,sans-serif}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{padding:16px;max-width:1100px;margin:0 auto;font-size:16px;line-height:1.5}
+h1{font-family:Unbounded,'Arial Black',sans-serif;font-size:24px;margin:4px 0 2px}
+h2{font-family:Unbounded,'Arial Black',sans-serif;font-size:19px;margin:0 0 6px}
+.sub{color:var(--mute);margin:0 0 12px}
+nav{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);z-index:5}
+nav button{flex:0 0 auto;border:2px solid var(--line);background:var(--card);color:var(--ink);padding:8px 12px;border-radius:12px;font:500 14px Rubik,Arial;cursor:pointer;white-space:nowrap}
+nav button.on{background:var(--blue);border-color:var(--blue);color:#fff}
+nav button .d{margin-left:6px;color:var(--grn);font-weight:700}
+.card{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:16px;margin:10px 0}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-start}
+.btn{border:2px solid var(--blue);background:var(--blue);color:#fff;border-radius:10px;padding:8px 14px;font:500 15px Rubik,Arial;cursor:pointer}
+.btn.alt{background:var(--card);color:var(--blue)}
+.btn.sm{padding:5px 10px;font-size:14px}
+.btn:disabled{opacity:.4;cursor:default}
+.tag{display:inline-block;border-radius:999px;padding:2px 10px;background:var(--soft);font-size:14px}
+.msg{padding:10px 14px;border-radius:12px;margin:8px 0;background:var(--soft)}
+.msg.ok{background:var(--ok)}.msg.bad{background:var(--bad)}
+.scroll{overflow-x:auto}
+table.t{border-collapse:collapse;background:var(--card)}
+table.t td,table.t th{border:2px solid var(--grid);padding:8px 14px;min-width:54px;text-align:center}
+table.t th{background:var(--navy);color:#fff}
+/* tab 1 */
+.bg{display:grid;grid-template-columns:repeat(7,46px);gap:3px;background:var(--grid);padding:3px;border-radius:8px;width:max-content}
+.bg>*{background:var(--card);height:46px;display:flex;align-items:center;justify-content:center;font-weight:600;border:0;color:var(--ink);font-size:20px;padding:0}
+.bg .h{background:var(--navy);color:var(--yel);font-size:16px}
+.bg button{cursor:pointer}.bg button:hover{background:var(--soft)}
+.bg .hl{background:var(--yel);color:#172340}
+.pick{display:flex;gap:6px;margin:6px 0;flex-wrap:wrap}
+.pick button{width:44px;height:44px;border-radius:10px;border:2px solid var(--line);background:var(--card);color:var(--ink);font:600 18px Rubik;cursor:pointer}
+.pick button.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+/* tab 2 */
+.chip{display:block;width:100%;text-align:left;border:2px solid var(--line);background:var(--card);color:var(--ink);padding:10px 12px;border-radius:12px;margin:6px 0;font:400 15px Rubik;cursor:pointer}
+.chip:hover{border-color:var(--blue)}
+.ans .chip{background:var(--soft)}
+/* tab 3 */
+.sim{border-collapse:collapse;touch-action:none;user-select:none;background:var(--card)}
+.sim td{border:2px solid var(--grid);min-width:82px;height:44px;padding:4px 8px;text-align:left;font-size:15px}
+.sim td.sel{outline:3px solid var(--blue);outline-offset:-3px;box-shadow:inset 0 0 0 100px rgba(46,91,255,.14)}
+.sw{width:30px;height:30px;border-radius:8px;border:2px solid var(--line);cursor:pointer;padding:0}
+.req{margin:4px 0;font-size:15px}.req.ok{color:var(--grn)}.req.no{color:var(--mute)}
+input[type=text],textarea{width:100%;border:2px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);padding:8px;font:15px Rubik}
+textarea{font-family:'JetBrains Mono',Consolas,monospace;font-size:14px;min-height:170px}
+/* tab 4 */
+.bad td,.bad th{padding:8px 12px;text-align:left;font-weight:400}
+.bad td[data-d],.bad th[data-d],.bad tr[data-d] td{cursor:pointer}
+.bad td.found,.bad tr.found td,.bad th.found{background:var(--ok)}
+.bad .tb{cursor:pointer}
+/* tab 5 */
+.opts{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.big{font-family:Unbounded,Arial;font-size:30px}
+.stars{font-size:34px;letter-spacing:4px}
+@media (max-width:560px){.bg{grid-template-columns:repeat(7,38px)}.bg>*{height:38px;font-size:17px}h1{font-size:20px}}
+</style>
+</head>
+<body>
+<h1>Лабораторія таблиць</h1>
+<p class="sub">Урок 9 · §3 · Створення таблиць у текстовому процесорі</p>
+<nav id="nav"></nav>
+<main id="panel"></main>
+<script>
+"use strict";
+var S={tab:0,t1:null,t2:0,t3:[0,0,0,0],t4:{},t5:{},t6:{a1:0,b1:0,m:0}};
+var TABS=["1 Адреса","2 Алгоритм","3 Майстер","4 Лікар","5 Дані чи розмітка","6 Код","7 Шпаргалка","Результат"];
+function $(s,r){return (r||document).querySelector(s)}
+function el(h){var d=document.createElement("div");d.innerHTML=h;return d.firstElementChild}
+function done(i){return i===0?S.t1!==null&&S.t1>=8:i===1?S.t2>0:i===2?S.t3.every(function(x){return x}):i===3?Object.keys(S.t4).length>=6:i===4?Object.keys(S.t5).length>=10:i===5?!!(S.t6.a1&&S.t6.b1):false}
+function nav(){var n=$("#nav");n.innerHTML="";TABS.forEach(function(t,i){var b=document.createElement("button");b.className=i===S.tab?"on":"";b.innerHTML=t+(done(i)?'<span class="d">✓</span>':"");b.onclick=function(){S.tab=i;show()};n.appendChild(b)})}
+function show(){nav();var p=$("#panel");p.innerHTML="";[t1,t2,t3,t4,t5,t6,t7,t8][S.tab](p);window.scrollTo(0,0)}
+
+/* ---------- 1 Адреса ---------- */
+var L="ABCDEF";
+function t1(p){
+ var round=0,score=0,cur=null,pickL=null,pickN=null,lock=false;
+ var box=el('<div class="card"></div>');p.appendChild(box);
+ function next(){
+  if(round>=10){S.t1=Math.max(S.t1||0,score);box.innerHTML='<h2>Готово!</h2><p class="big">'+score+' / 10</p><p>'+(score>=8?"Відмінно: адреси ти знаєш.":"Спробуй ще раз, щоб набрати 8 і більше.")+'</p><button class="btn" id="again">Ще раз</button>';$("#again").onclick=function(){show()};nav();return}
+  round++;lock=false;pickL=null;pickN=null;
+  cur={c:Math.floor(Math.random()*6),r:Math.floor(Math.random()*6)+1,type:round%2?"find":"name"};
+  draw("")}
+ function draw(fb){
+  var addr=L[cur.c]+cur.r;
+  var h='<h2>Раунд '+round+' з 10 · рахунок '+score+'</h2>';
+  h+=cur.type==="find"?'<p>Клікни клітинку <b class="tag" style="font-size:20px">'+addr+'</b></p>':'<p>Яка адреса виділеної клітинки? Вибери літеру й число.</p>';
+  var g='<div class="bg"><div class="h"></div>';for(var i=0;i<6;i++)g+='<div class="h">'+L[i]+'</div>';
+  for(var r=1;r<=6;r++){g+='<div class="h">'+r+'</div>';for(var c=0;c<6;c++){var hl=cur.type==="name"&&c===cur.c&&r===cur.r;g+='<button data-c="'+c+'" data-r="'+r+'" class="'+(hl?"hl":"")+'">'+(hl?"★":"")+'</button>'}}
+  g+='</div>';h+=g;
+  if(cur.type==="name"){h+='<div class="pick" id="pl">'+L.split("").map(function(x){return '<button class="'+(pickL===x?"on":"")+'">'+x+'</button>'}).join("")+'</div><div class="pick" id="pn">'+[1,2,3,4,5,6].map(function(x){return '<button class="'+(pickN===x?"on":"")+'">'+x+'</button>'}).join("")+'</div>'}
+  h+=fb;box.innerHTML=h;
+  if(cur.type==="find"){box.querySelectorAll(".bg button").forEach(function(b){b.onclick=function(){if(lock)return;var ok=+b.dataset.c===cur.c&&+b.dataset.r===cur.r;res(ok)}})}
+  else{box.querySelectorAll("#pl button").forEach(function(b){b.onclick=function(){if(lock)return;pickL=b.textContent;chk()}});box.querySelectorAll("#pn button").forEach(function(b){b.onclick=function(){if(lock)return;pickN=+b.textContent;chk()}})}
+ }
+ function chk(){if(pickL&&pickN){res(pickL===L[cur.c]&&pickN===cur.r)}else draw("")}
+ function res(ok){lock=true;if(ok)score++;draw('<div class="msg '+(ok?"ok":"bad")+'">'+(ok?"Так!":"Ні, це була "+L[cur.c]+cur.r+".")+'</div>');setTimeout(next,ok?600:1300)}
+ next();
+ p.appendChild(el('<div class="card"><b>Пам’ятай:</b> адреса клітинки — <b>літера стовпця + номер рядка</b>. Так само працюють Google Таблиці й Excel. У програмуванні їх замінюють двома номерами: [рядок][стовпець], причому лічба починається з 0.</div>'))
+}
+
+/* ---------- 2 Алгоритм ---------- */
+var CARDS=[["Установити курсор у місце документа, де має бути таблиця",1],["Відкрити вкладку «Вставлення»",2],["Вибрати команду «Таблиця»",3],["Задати розмір: протягнути по сітці (або «Вставити таблицю…» і ввести числа)",4],["Ввести текст у клітинки, переходячи клавішею Tab",5],["На вкладці «Макет» вибрати «Орієнтація»",0],["Натиснути Ctrl+P",0],["Видалити всі межі",0]];
+function t2(p){
+ var pool=CARDS.map(function(c,i){return i}),ans=[],tries=0,solved=S.t2>0;
+ pool.sort(function(){return Math.random()-.5});
+ var box=el('<div class="card"></div>');p.appendChild(box);
+ function draw(fb){
+  box.innerHTML='<h2>Завдання 3: алгоритм створення таблиці</h2><p>Склади алгоритм: клікай картки по порядку. Серед них є зайві — їх у відповідь не бери.</p><div class="row"><div style="flex:1;min-width:250px"><b>Картки</b><div id="pool"></div></div><div style="flex:1;min-width:250px" class="ans"><b>Твій алгоритм</b><div id="ans"></div></div></div><div id="fb">'+(fb||"")+'</div><button class="btn" id="chk">Перевірити</button> <button class="btn alt" id="rst">Спочатку</button>';
+  pool.forEach(function(i){var b=document.createElement("button");b.className="chip";b.textContent=CARDS[i][0];b.onclick=function(){pool.splice(pool.indexOf(i),1);ans.push(i);draw()};$("#pool").appendChild(b)});
+  ans.forEach(function(i,k){var b=document.createElement("button");b.className="chip";b.textContent=(k+1)+". "+CARDS[i][0];b.onclick=function(){ans.splice(k,1);pool.push(i);draw()};$("#ans").appendChild(b)});
+  $("#chk").onclick=check;$("#rst").onclick=function(){pool=CARDS.map(function(c,i){return i}).sort(function(){return Math.random()-.5});ans=[];draw()}}
+ function check(){
+  var good=ans.length===5&&ans.every(function(i,k){return CARDS[i][1]===k+1});
+  tries++;
+  if(good){if(!S.t2)S.t2=tries===1?3:2;nav();draw('<div class="msg ok">Правильно! Це й є алгоритм із підручника: <b>Вставлення → Таблиця → розмір</b>, а потім заповнення. У Word третій крок має ще варіант «Намалювати таблицю».</div>')}
+  else{var hint=ans.some(function(i){return CARDS[i][1]===0})?"Серед вибраних є зайва картка (вона не стосується створення таблиці).":ans.length<5?"Додай усі потрібні кроки.":"Кроки є, але порядок інший: що робимо першим?";draw('<div class="msg bad">Ще ні. '+hint+'</div>')}}
+ draw("");
+}
+
+/* ---------- 3 Майстер ---------- */
+var CH=[
+ {n:"Розминка: розмір",r:2,c:2,d:"Почни з таблиці 2×2. Додай рядки й стовпці кнопками.",q:[["Таблиця має 4 рядки",function(g){return g.length===4}],["Таблиця має 3 стовпці",function(g){return g[0].length===3}]]},
+ {n:"Заголовок таблиці",r:3,c:4,d:"Зроби заголовок над усією таблицею.",q:[["Клітинка A1 об’єднана на всі 4 стовпці",function(g){return g[0][0].cs===4}],["Має заливку",function(g){return !!g[0][0].fill}],["Жирний шрифт",function(g){return !!g[0][0].b}],["Текст по центру",function(g){return !!g[0][0].ce}]]},
+ {n:"Розклад",r:4,c:4,d:"Рядок 1 — загальний заголовок; рядок 2 — шапка; у першому стовпці рядки 3–4 — одна клітинка («Ранок»).",q:[["A1 об’єднана на 4 стовпці та має заливку",function(g){return g[0][0].cs===4&&!!g[0][0].fill}],["Усі клітинки шапки (рядок 2) жирні із заливкою",function(g){return g[1].every(function(x){return x.b&&x.fill})}],["A3 і A4 об’єднані по вертикалі",function(g){return g[2][0].rs===2}]]},
+ {n:"Кросс-таблиця",r:5,c:5,d:"Таблиця даних 5×5. Діагональ B2–E5 залий сірим, шапку зроби жирною із заливкою. Об’єднувати клітинки не можна!",q:[["Діагональ B2, C3, D4, E5 залита",function(g){return [1,2,3,4].every(function(i){return !!g[i][i].fill})}],["Шапка (B1–E1) жирна й із заливкою",function(g){return [1,2,3,4].every(function(i){return g[0][i].b&&g[0][i].fill})}],["Перший стовпець (A2–A5) жирний",function(g){return [1,2,3,4].every(function(i){return g[i][0].b})}],["Немає об’єднаних клітинок",function(g){return g.every(function(r){return r.every(function(x){return !x.m&&x.rs===1&&x.cs===1})})}]]}
+];
+var COL=[["","без"],["#ffd447","#ffd447"],["#bfd0ff","#bfd0ff"],["#9be3c8","#9be3c8"],["#ffd3a1","#ffd3a1"],["#8f9bba","#8f9bba"]];
+function mk(r,c){var g=[];for(var i=0;i<r;i++){var row=[];for(var j=0;j<c;j++)row.push({m:0,rs:1,cs:1,fill:"",b:0,ce:0,t:""});g.push(row)}return g}
+function t3(p){
+ var cur=0,g,sel,down=false,anchor;
+ var top=el('<div class="card"><h2>Майстер таблиць</h2><p class="sub" style="margin:0">Тренажер того, що ти робитимеш у Google Документах чи Word. Виділяй клітинки мишею (протягни від клітинки до клітинки).</p><div class="opts" id="ch"></div></div>');
+ var area=el('<div></div>');p.appendChild(top);p.appendChild(area);
+ function start(i){cur=i;g=mk(CH[i].r,CH[i].c);sel={r1:0,c1:0,r2:0,c2:0};draw()}
+ function norm(){return{r1:Math.min(sel.r1,sel.r2),r2:Math.max(sel.r1,sel.r2),c1:Math.min(sel.c1,sel.c2),c2:Math.max(sel.c1,sel.c2)}}
+ function expand(s){var ch=true;while(ch){ch=false;for(var r=0;r<g.length;r++)for(var c=0;c<g[0].length;c++){var x=g[r][c];if(x.m)continue;var a=r,b=c,a2=r+x.rs-1,b2=c+x.cs-1;if(a<=s.r2&&a2>=s.r1&&b<=s.c2&&b2>=s.c1){if(a<s.r1||a2>s.r2||b<s.c1||b2>s.c2){s.r1=Math.min(s.r1,a);s.r2=Math.max(s.r2,a2);s.c1=Math.min(s.c1,b);s.c2=Math.max(s.c2,b2);ch=true}}}}return s}
+ function each(f){var s=expand(norm());for(var r=s.r1;r<=s.r2;r++)for(var c=s.c1;c<=s.c2;c++)f(g[r][c],r,c,s)}
+ function draw(){
+  var q=CH[cur].q.map(function(x){return [x[0],x[1](g)]});var all=q.every(function(x){return x[1]});if(all)S.t3[cur]=1;
+  $("#ch",top).innerHTML=CH.map(function(c,i){return '<button class="btn sm '+(i===cur?"":"alt")+'" data-i="'+i+'">'+(S.t3[i]?"✓ ":"")+c.n+'</button>'}).join("");
+  top.querySelectorAll("[data-i]").forEach(function(b){b.onclick=function(){start(+b.dataset.i)}});
+  var s=expand(norm());
+  var h='<div class="card"><p style="margin-top:0"><b>'+CH[cur].n+'.</b> '+CH[cur].d+'</p><div class="row"><div><div class="scroll"><table class="sim" id="sim">';
+  for(var r=0;r<g.length;r++){h+="<tr>";for(var c=0;c<g[0].length;c++){var x=g[r][c];if(x.m)continue;var inS=r>=s.r1&&r<=s.r2&&c>=s.c1&&c<=s.c2;h+='<td data-r="'+r+'" data-c="'+c+'" '+(x.rs>1?'rowspan="'+x.rs+'" ':"")+(x.cs>1?'colspan="'+x.cs+'" ':"")+'class="'+(inS?"sel":"")+'" style="'+(x.fill?"background:"+x.fill+";color:#172340;":"")+(x.b?"font-weight:700;":"")+(x.ce?"text-align:center;":"")+'">'+(x.t||'<span style="opacity:.35">'+String.fromCharCode(65+c)+(r+1)+'</span>')+'</td>'}h+="</tr>"}
+  h+='</table></div><div class="opts" style="margin-top:10px"><button class="btn sm" id="mg">Об’єднати</button><button class="btn sm alt" id="um">Роз’єднати</button><button class="btn sm alt" id="bd">Жирний</button><button class="btn sm alt" id="ce">По центру</button></div><div class="opts" style="align-items:center"><span class="tag">Заливка</span>'+COL.map(function(c){return '<button class="sw" data-f="'+c[0]+'" title="'+c[1]+'" style="background:'+(c[0]||"var(--card)")+'">'+(c[0]?"":"∅")+'</button>'}).join("")+'</div><div class="opts"><button class="btn sm alt" id="ar">+ рядок</button><button class="btn sm alt" id="ac">+ стовпець</button><button class="btn sm alt" id="dr">− рядок</button><button class="btn sm alt" id="dc">− стовпець</button></div><div style="margin-top:8px"><input type="text" id="tx" placeholder="Текст у виділеній клітинці (Enter — записати)"></div><div id="note"></div></div>';
+  h+='<div style="flex:1;min-width:240px"><b>Вимоги</b>'+q.map(function(x){return '<div class="req '+(x[1]?"ok":"no")+'">'+(x[1]?"✓ ":"○ ")+x[0]+'</div>'}).join("")+(all?'<div class="msg ok">🎉 Усе виконано!</div>':"")+'</div></div></div>';
+  area.innerHTML=h;nav();bind()}
+ function note(t){var n=$("#note",area);if(n)n.innerHTML='<div class="msg bad">'+t+'</div>'}
+ function paintSel(){var s=expand(norm());area.querySelectorAll("#sim td[data-r]").forEach(function(t){var r=+t.dataset.r,c=+t.dataset.c;t.classList.toggle("sel",r>=s.r1&&r<=s.r2&&c>=s.c1&&c<=s.c2)})}
+ function bind(){
+  var tb=$("#sim",area);
+  function cellAt(x,y){var e=document.elementFromPoint(x,y);return e&&e.closest?e.closest("td[data-r]"):null}
+  tb.onpointerdown=function(e){var t=e.target.closest("td[data-r]");if(!t)return;down=true;sel={r1:+t.dataset.r,c1:+t.dataset.c,r2:+t.dataset.r,c2:+t.dataset.c};paintSel()};
+  tb.onpointermove=function(e){if(!down)return;var t=cellAt(e.clientX,e.clientY);if(!t)return;var r=+t.dataset.r,c=+t.dataset.c;if(r!==sel.r2||c!==sel.c2){sel.r2=r;sel.c2=c;paintSel()}};
+  document.onpointerup=function(){down=false};
+  $("#mg",area).onclick=function(){var s=expand(norm());if(s.r1===s.r2&&s.c1===s.c2){draw();note("Виділи кілька сусідніх клітинок.");return}var tx=[];for(var r=s.r1;r<=s.r2;r++)for(var c=s.c1;c<=s.c2;c++){if(g[r][c].t)tx.push(g[r][c].t);if(r!==s.r1||c!==s.c1){g[r][c].m=1;g[r][c].rs=1;g[r][c].cs=1}}var o=g[s.r1][s.c1];o.rs=s.r2-s.r1+1;o.cs=s.c2-s.c1+1;o.t=tx.join(" ");sel={r1:s.r1,c1:s.c1,r2:s.r1,c2:s.c1};draw()};
+  $("#um",area).onclick=function(){var s=expand(norm());for(var r=s.r1;r<=s.r2;r++)for(var c=s.c1;c<=s.c2;c++){var x=g[r][c];if(!x.m&&(x.rs>1||x.cs>1)){for(var a=r;a<r+x.rs;a++)for(var b=c;b<c+x.cs;b++)g[a][b].m=0;x.rs=1;x.cs=1}}draw()};
+  $("#bd",area).onclick=function(){var on=null;each(function(x){if(x.m)return;if(on===null)on=!x.b;x.b=on?1:0});draw()};
+  $("#ce",area).onclick=function(){var on=null;each(function(x){if(x.m)return;if(on===null)on=!x.ce;x.ce=on?1:0});draw()};
+  area.querySelectorAll(".sw").forEach(function(b){b.onclick=function(){each(function(x){if(!x.m)x.fill=b.dataset.f});draw()}});
+  $("#ar",area).onclick=function(){if(g.length>=10){note("Це вже забагато рядків для вправи.");return}g.push(g[0].map(function(){return{m:0,rs:1,cs:1,fill:"",b:0,ce:0,t:""}}));draw()};
+  $("#ac",area).onclick=function(){if(g[0].length>=8){note("Це вже забагато стовпців для вправи.");return}g.forEach(function(r){r.push({m:0,rs:1,cs:1,fill:"",b:0,ce:0,t:""})});draw()};
+  $("#dr",area).onclick=function(){if(g.length<=1)return;if(g[g.length-1].some(function(x){return x.m})){note("Останній рядок є частиною об’єднаної клітинки. Спершу роз’єднай її.");return}g.pop();sel={r1:0,c1:0,r2:0,c2:0};draw()};
+  $("#dc",area).onclick=function(){var l=g[0].length-1;if(l<1)return;if(g.some(function(r){return r[l].m})){note("Останній стовпець є частиною об’єднаної клітинки. Спершу роз’єднай її.");return}g.forEach(function(r){r.pop()});sel={r1:0,c1:0,r2:0,c2:0};draw()};
+  $("#tx",area).onkeydown=function(e){if(e.key==="Enter"){var s=expand(norm());g[s.r1][s.c1].t=this.value.slice(0,40);this.value="";draw()}};
+ }
+ start(0);
+}
+
+/* ---------- 4 Лікар ---------- */
+var DEF={
+ h:["Немає виділеної шапки","Шапка (перший рядок) має виділятися: жирний шрифт і заливка. Інакше незрозуміло, де підписи, а де дані."],
+ n:["Числа вирівняно ліворуч","Числа вирівнюємо праворуч (або по десятковій комі), щоб розряди стояли під розрядами. Порівняти 9 і 10 так важко."],
+ u:["Різні одиниці в одному стовпці","У стовпці має бути одна одиниця: «хв» у шапці, а в клітинках лише числа. Порівнювати «12 хв» і «45 с» неможливо."],
+ m:["Об’єднана клітинка в таблиці даних","У таблиці даних об’єднання ламає сортування й підрахунки. Тут «—» має бути окремою порожньою клітинкою."],
+ e:["Порожній рядок","Порожній рядок — це або забутий запис, або зайвий рядок. Видали його (або заповни)."],
+ b:["Занадто яскраві й товсті межі","Товсті яскраві «ґратки» відволікають. Достатньо тонких світлих меж і заливки шапки."]};
+function t4(p){
+ var box=el('<div class="card"></div>');p.appendChild(box);
+ function draw(msg){
+  var f=S.t4,n=Object.keys(f).length;
+  var cl=function(k){return f[k]?" found":""};
+  box.innerHTML='<h2>Лікар таблиць</h2><p>У цій таблиці <b>6 вад</b>. Клацай на місця, де бачиш проблему. Знайдено: <b>'+n+' / 6</b></p><div class="scroll"><table class="t bad tb" data-d="b" style="border:6px solid #e0457b;border-collapse:collapse;background:var(--card)"><tr class="'+cl("h")+'" data-d="h"><td style="font-weight:400">Учень</td><td>Бали</td><td>Час</td></tr><tr><td>Аня</td><td data-d="n" class="'+cl("n")+'" style="text-align:left">9</td><td data-d="u" class="'+cl("u")+'">12 хв</td></tr><tr><td>Богдан</td><td data-d="n" class="'+cl("n")+'" style="text-align:left">10</td><td data-d="u" class="'+cl("u")+'">45 с</td></tr><tr><td>Влад</td><td data-d="m" class="'+cl("m")+'" colspan="2" style="text-align:center">—</td></tr><tr data-d="e" class="'+cl("e")+'"><td>&nbsp;</td><td></td><td></td></tr><tr><td>Галя</td><td data-d="n" class="'+cl("n")+'" style="text-align:left">8,5</td><td data-d="u" class="'+cl("u")+'">1 год</td></tr></table></div>'+(msg||'<div class="msg">Підказка: подивись на шапку, вирівнювання чисел, одиниці, об’єднану клітинку, порожній рядок і межі таблиці.</div>')+(n===6?'<div class="msg ok">🎉 Знайдено всі вади! Тепер у Місії 4 виправ схожу таблицю в заготовці.</div>':"");
+  box.querySelectorAll("[data-d]").forEach(function(x){x.onclick=function(ev){ev.stopPropagation();var k=x.dataset.d;if(x.tagName==="TABLE"&&ev.target.closest("td"))return;S.t4[k]=1;draw('<div class="msg ok"><b>'+DEF[k][0]+'.</b> '+DEF[k][1]+'</div>');nav()}});
+  box.querySelectorAll("td,tr").forEach(function(x){if(!x.dataset.d&&!x.closest("tr[data-d]")){x.onclick=function(ev){ev.stopPropagation();draw('<div class="msg bad">Тут усе гаразд. Шукай далі.</div>')}}});
+ }
+ draw();
+}
+
+/* ---------- 5 Дані чи розмітка ---------- */
+var SC=[["Розклад уроків на тиждень","d","Дві ознаки: день і номер уроку. Це таблиця даних."],["Кроки встановлення програми","l","Одна ознака — порядок кроків. Нумерований список."],["Кросворд у документі","r","Таблиця потрібна лише як сітка для літер: це розмітка."],["Турнірна таблиця чемпіонату","d","Команда проти команди: дані за двома ознаками."],["Що купити: хліб, молоко, яйця","l","Просто перелік без другого виміру — маркований список."],["Афіша: фото ліворуч, текст праворуч","r","Таблиця розставляє елементи на сторінці; межі краще сховати."],["Журнал оцінок класу","d","Учні в рядках, дати чи предмети в стовпцях."],["Судоку","r","Сітка 9×9 потрібна лише для розташування цифр: розмітка."],["План доповіді з розділами й підрозділами","l","Це дерево, а не сітка: багаторівневий список."],["Прайс: товар, ціна, кількість","d","У кожного товару кілька ознак: таблиця даних."]];
+function t5(p){
+ var box=el('<div class="card"></div>');p.appendChild(box);
+ function draw(){
+  var h='<h2>Список, таблиця даних чи таблиця-розмітка?</h2><p>Обери найкращий спосіб для кожного випадку.</p>';
+  SC.forEach(function(s,i){var a=S.t5[i];h+='<div style="border-top:1px solid var(--line);padding:8px 0"><b>'+(i+1)+'. '+s[0]+'</b><div class="opts">'+[["l","Список"],["d","Таблиця даних"],["r","Таблиця-розмітка"]].map(function(o){var cls="btn sm alt";if(a)cls="btn sm "+(o[0]===s[1]?"":"alt");return '<button class="'+cls+'" data-i="'+i+'" data-o="'+o[0]+'" '+(a?"disabled":"")+'>'+o[1]+'</button>'}).join("")+'</div>'+(a?'<div class="msg '+(a===s[1]?"ok":"bad")+'">'+(a===s[1]?"Вірно. ":"Не зовсім: правильно — "+({l:"список",d:"таблиця даних",r:"таблиця-розмітка"})[s[1]]+". ")+s[2]+'</div>':"")+'</div>'});
+  var n=Object.keys(S.t5).length,ok=0;for(var k in S.t5)if(S.t5[k]===SC[k][1])ok++;
+  h+=(n===10?'<div class="msg ok"><b>Результат: '+ok+' / 10</b></div>':"");
+  box.innerHTML=h;box.querySelectorAll("[data-i]").forEach(function(b){b.onclick=function(){S.t5[b.dataset.i]=b.dataset.o;draw();nav()}})}
+ draw();
+}
+
+/* ---------- 6 Код ---------- */
+function clean(src,root){
+ var allowed={TABLE:1,THEAD:1,TBODY:1,TR:1,TD:1,TH:1,CAPTION:1,B:1,I:1,STRONG:1,EM:1};
+ function walk(n,out){n.childNodes.forEach(function(c){
+  if(c.nodeType===3){out.appendChild(document.createTextNode(c.textContent))}
+  else if(c.nodeType===1){var t=c.tagName;if(allowed[t]){var e=document.createElement(t.toLowerCase());["colspan","rowspan"].forEach(function(a){var v=parseInt(c.getAttribute(a),10);if(v>0&&v<=12)e.setAttribute(a,v)});out.appendChild(e);walk(c,e)}else walk(c,out)}})}
+ var d=new DOMParser().parseFromString(src,"text/html");walk(d.body,root);return d}
+function md(src){var ls=src.split("\n").map(function(x){return x.trim()}).filter(function(x){return x.charAt(0)==="|"});if(!ls.length)return"";var h="<table>";ls.forEach(function(l,i){if(/^\|[\s:|-]+\|?$/.test(l)&&l.indexOf("-")>-1)return;var cs=l.replace(/^\|/,"").replace(/\|$/,"").split("|").map(function(x){return x.replace(/[<>&]/g,"")});var tg=i===0?"th":"td";h+="<tr>"+cs.map(function(c){return "<"+tg+">"+c.trim()+"</"+tg+">"}).join("")+"</tr>"});return h+"</table>"}
+function t6(p){
+ var A='<table>\n  <tr>\n    <th>Клас</th>\n    <th>Зібрано, кг</th>\n  </tr>\n  <tr>\n    <td>7-А</td>\n    <td>12</td>\n  </tr>\n</table>';
+ var B="| Клас | Зібрано, кг |\n|------|-------------|\n| 7-А  | 12          |";
+ var box=el('<div class="card"><h2>Код таблиці</h2><p>Для допитливих: так таблиця виглядає «зсередини» на вебсторінці. Змінюй код — і дивись, що станеться.</p><div class="opts"><button class="btn sm" id="mh">HTML</button><button class="btn sm alt" id="mm">Markdown</button></div><div id="in"></div></div>');p.appendChild(box);
+ var mode="h";
+ function draw(){
+  $("#mh",box).className="btn sm"+(mode==="h"?"":" alt");$("#mm",box).className="btn sm"+(mode==="m"?"":" alt");
+  var tasks=mode==="h"?'<div class="msg" id="tk"><b>Завдання А:</b> додай третій рядок (ще один <b>&lt;tr&gt;</b> із двома клітинками).<br><b>Завдання Б:</b> над таблицею додай рядок із заголовком «Макулатура» на обидва стовпці: <b>&lt;th colspan="2"&gt;</b>.</div>':'<div class="msg"><b>Завдання:</b> додай ще два рядки (учні 7-Б і 7-В), кожен у новому рядку, що починається з риски |.</div>';
+  $("#in",box).innerHTML=tasks+'<div class="row"><div style="flex:1;min-width:260px"><textarea id="src" spellcheck="false"></textarea></div><div style="flex:1;min-width:240px"><b>Результат</b><div class="scroll" id="out" style="margin-top:6px"></div></div></div><div id="st"></div>';
+  var ta=$("#src",box);ta.value=mode==="h"?A:B;ta.oninput=upd;upd()}
+ function upd(){
+  var v=$("#src",box).value,out=$("#out",box);out.innerHTML="";var tbl;
+  if(mode==="h"){var root=document.createElement("div");clean(v,root);tbl=root.querySelector("table")}
+  else{var root2=document.createElement("div");clean(md(v),root2);tbl=root2.querySelector("table")}
+  if(!tbl){out.textContent="(таблиці немає)";return}
+  tbl.className="t";out.appendChild(tbl);
+  var rows=tbl.querySelectorAll("tr").length,msg="";
+  if(mode==="h"){var okA=rows>=3;var okB=!!tbl.querySelector("[colspan]");if(okA&&!S.t6.a1){S.t6.a1=1}if(okB){S.t6.b1=1}msg='Рядків: '+rows+(okA?" ✓":"")+" · об’єднання colspan"+(okB?" ✓":"");if(S.t6.a1&&S.t6.b1)msg+=' — 🎉 обидва завдання виконано!'}
+  else{if(rows>=4)S.t6.m=1;msg="Рядків: "+rows+(rows>=4?" ✓":"")}
+  $("#st",box).innerHTML='<div class="msg">'+msg+'</div>';nav()}
+ $("#mh",box).onclick=function(){mode="h";draw()};$("#mm",box).onclick=function(){mode="m";draw()};
+ draw();
+}
+
+/* ---------- 7 Шпаргалка ---------- */
+function t7(p){
+ var R=[["Створити","Вставлення → Таблиця → сітка","Вставлення → Таблиця → сітка / «Вставити таблицю…» / «Намалювати таблицю»"],["Додати рядок чи стовпець","права кнопка в клітинці → «Вставити рядок…» / «Вставити стовпець…»","права кнопка → «Вставити» або вкладка «Макет»"],["Видалити","права кнопка → «Видалити рядок / стовпець / таблицю»","«Макет» → «Видалити»"],["Об’єднати клітинки","виділити → права кнопка → «Об’єднати клітинки»","«Макет» → «Об’єднати клітинки»"],["Однакова ширина","права кнопка → «Розподілити стовпці / рядки»","«Макет» → «Вирівняти ширину стовпців / висоту рядків»"],["Межі, заливка","права кнопка → «Властивості таблиці»","«Конструктор таблиці» → «Заливка», «Межі»"],["Вирівнювання в клітинці","«Властивості таблиці» → вирівнювання; кнопки вирівнювання","«Макет» → дев’ять кнопок вирівнювання"],["Прибрати межі","межі: колір білий або ширина 0","«Межі» → «Немає меж»; «Гумка»"],["Сортування","права кнопка → «Сортувати таблицю»","«Макет» → «Сортування»"],["Формула","немає (потрібні Google Таблиці)","«Макет» → «Формула», наприклад SUM(ABOVE)"],["Наступна клітинка","Tab","Tab (в останній — новий рядок)"]];
+ p.appendChild(el('<div class="card"><h2>Шпаргалка: Google Документи і Word</h2><p class="sub">Назви команд можуть трохи відрізнятися залежно від версії та мови інтерфейсу.</p><div class="scroll"><table class="t" style="text-align:left"><tr><th>Дія</th><th>Google Документи</th><th>Word</th></tr>'+R.map(function(r){return '<tr><td style="text-align:left"><b>'+r[0]+'</b></td><td style="text-align:left">'+r[1]+'</td><td style="text-align:left">'+r[2]+'</td></tr>'}).join("")+'</table></div></div>'));
+}
+
+/* ---------- Результат ---------- */
+function t8(p){
+ var ok5=0;for(var k in S.t5)if(S.t5[k]===SC[k][1])ok5++;
+ var pts=[["1 Адреса (до 10)",S.t1||0,10],["2 Алгоритм (до 3)",S.t2,3],["3 Майстер (2 за кожну вправу)",S.t3.reduce(function(a,b){return a+b*2},0),8],["4 Лікар (знайдено вад)",Object.keys(S.t4).length,6],["5 Дані чи розмітка (до 10)",ok5,10],["6 Код (2 за завдання)",(S.t6.a1&&S.t6.b1?2:0)+(S.t6.m?2:0),4]];
+ var a=0,m=0;pts.forEach(function(x){a+=x[1];m+=x[2]});var st=Math.round(a/m*5);
+ p.appendChild(el('<div class="card"><h2>Результат</h2><p class="stars">'+"★".repeat(st)+"☆".repeat(5-st)+'</p><p class="big">'+a+' / '+m+'</p><table class="t" style="margin-top:8px">'+pts.map(function(x){return '<tr><td style="text-align:left">'+x[0]+'</td><td><b>'+x[1]+'</b> / '+x[2]+'</td></tr>'}).join("")+'</table><p class="sub" style="margin-top:12px">Зроби скріншот цього екрана або назви свій результат учителю.</p></div>'));
+}
+show();
+</script>
+</body>
+</html>
